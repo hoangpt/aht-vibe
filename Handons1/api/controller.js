@@ -8,20 +8,23 @@ exports.calculate = function(req, res) {
     res.json({ error: err.message });
   });
 
-  if (!req.query.operation) {
+  // Support both GET (query parameters) and POST (request body)
+  const params = req.method === 'POST' ? req.body : req.query;
+
+  if (!params.operation) {
     throw new Error("Unspecified operation");
   }
 
-  if (!req.query.operand1 ||
-      !req.query.operand1.match(/^(-)?[0-9\.]+(e(-)?[0-9]+)?$/) ||
-      req.query.operand1.replace(/[-0-9e]/g, '').length > 1) {
-    throw new Error("Invalid operand1: " + req.query.operand1);
+  if (!params.operand1 ||
+      !params.operand1.toString().match(/^(-)?[0-9\.]+(e(-)?[0-9]+)?$/) ||
+      params.operand1.toString().replace(/[-0-9e]/g, '').length > 1) {
+    throw new Error("Invalid operand1: " + params.operand1);
   }
 
-  if (!req.query.operand2 ||
-      !req.query.operand2.match(/^(-)?[0-9\.]+(e(-)?[0-9]+)?$/) ||
-      req.query.operand2.replace(/[-0-9e]/g, '').length > 1) {
-    throw new Error("Invalid operand2: " + req.query.operand2);
+  if (!params.operand2 ||
+      !params.operand2.toString().match(/^(-)?[0-9\.]+(e(-)?[0-9]+)?$/) ||
+      params.operand2.toString().replace(/[-0-9e]/g, '').length > 1) {
+    throw new Error("Invalid operand2: " + params.operand2);
   }
 
     // TODO: Add operator
@@ -37,12 +40,12 @@ exports.calculate = function(req, res) {
       }
     };
 
-    var operation = operations[req.query.operation];
+    var operation = operations[params.operation];
     if (!operation) {
-      throw new Error("Invalid operation: " + req.query.operation);
+      throw new Error("Invalid operation: " + params.operation);
     }
 
-  res.json({ result: operation(req.query.operand1, req.query.operand2) });
+  res.json({ result: operation(params.operand1, params.operand2) });
 };
 
 
