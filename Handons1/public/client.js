@@ -17,21 +17,25 @@ var operand2 = 0;
 var operation = null;
 
 function calculate(operand1, operand2, operation) {
-    var uri = location.origin + "/arithmetic";
+    var data = {
+        operation: null,
+        operand1: operand1,
+        operand2: operand2
+    };
 
     // TODO: Add operator
     switch (operation) {
         case '+':
-            uri += "?operation=add";
+            data.operation = "add";
             break;
         case '-':
-            uri += "?operation=subtract";
+            data.operation = "subtract";
             break;
         case '*':
-            uri += "?operation=multiply";
+            data.operation = "multiply";
             break;            
         case '/':
-            uri += "?operation=divide";
+            data.operation = "divide";
             break;
 
         default:
@@ -39,13 +43,12 @@ function calculate(operand1, operand2, operation) {
             return;
     }
 
-    uri += "&operand1=" + encodeURIComponent(operand1);
-    uri += "&operand2=" + encodeURIComponent(operand2);
-
     setLoading(true);
 
     var http = new XMLHttpRequest();
-    http.open("GET", uri, true);
+    http.open("POST", location.origin + "/arithmetic", true);
+    http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    
     http.onload = function () {
         setLoading(false);
 
@@ -56,7 +59,13 @@ function calculate(operand1, operand2, operation) {
             setError();
         }
     };
-    http.send(null);
+    
+    // Convert data object to URL-encoded string
+    var params = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&');
+    
+    http.send(params);
 }
 
 function clearPressed() {
