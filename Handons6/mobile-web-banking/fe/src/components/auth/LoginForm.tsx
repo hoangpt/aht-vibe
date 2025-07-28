@@ -42,7 +42,7 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
           {/* Demo credentials info */}
           <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800 font-medium mb-1">Demo Credentials:</p>
-            <p className="text-xs text-blue-600">Email: admin | Password: passwd</p>
+            <p className="text-xs text-blue-600">Email: admin@mail.com | Password: passwd</p>
           </div>
         </div>
 
@@ -103,7 +103,7 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
           <button
             type="button"
             onClick={() => {
-              setEmail('admin');
+              setEmail('admin@mail.com');
               setPassword('passwd');
               handleSubmit({ preventDefault: () => {} } as React.FormEvent);
             }}
